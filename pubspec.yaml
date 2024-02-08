@@ -33,6 +33,10 @@ dependencies:
   socket_io_client: ^2.0.3+1
   rxdart: ^0.27.7
   flutter_chat_bubble: ^2.0.2
+  flutter_image_compress: ^2.1.0
+  qr_flutter: ^4.1.0
+  camera: ^0.10.5+9
+  qr_code_scanner: ^1.0.1
 
 dev_dependencies:
   flutter_test:
@@ -64,6 +68,7 @@ flutter:
     - assets/images/login_images/safe_area.png
     - assets/images/profile_images/default_dog_profile.svg
     - assets/images/profile_images/pet_profile_card.png
+    - assets/images/profile_images/pet_profile_witdog_logo.svg
     - assets/images/profile_images/pet_profile_witdog_logo.png
     - assets/images/profile_images/login_success.png
     - assets/images/index_images/demo_chat.png
@@ -73,3 +78,5 @@ flutter:
     - assets/images/index_images/demo_dialog.png
     - assets/images/index_images/WITDOG.png
     - assets/images/petbot_images/petbot_main_image.png
+    - assets/images/index_images/demo_user_add.png
+    - assets/images/emoticon_images/emoticon_heart.png

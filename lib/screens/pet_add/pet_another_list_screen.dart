@@ -140,10 +140,27 @@ class _PetAnotherListScreenState extends State<PetAnotherListScreen> {
               height: 112,
               color: Colors.white,
               child: ListTile(
-                title: Text(pet.petName),
+                trailing: Icon(Icons.close_outlined,
+                  size: 30,),
+                horizontalTitleGap: 30,
+                minVerticalPadding: 30,
+                title: Text(pet.petName,
+                  style: TextStyle(
+                    fontSize: 22,
+                    color: Color(0xFF272222),
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
                 subtitle: Text(
                   '${pet.petPhone}',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Color(0xFF272222),
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
+                isThreeLine: true,
+                dense: false,
                 leading: Container(
                   width: 92.0,
                   height: 92.0,
@@ -230,6 +247,8 @@ class _PetAnotherListScreenState extends State<PetAnotherListScreen> {
                         child: ElevatedButton(
                           onPressed: () {},
                           style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xFFF0F0F0),
+                            elevation: 0,
                             padding: EdgeInsets
                                 .zero, // 버튼 패딩을 0으로 설정하여 내용물을 꽉 채우도록 합니다.
                           ),
@@ -243,9 +262,6 @@ class _PetAnotherListScreenState extends State<PetAnotherListScreen> {
                   ),
                 ),
               )
-            ]
-            )
-        )
-    );
+            ])));
   }
 }

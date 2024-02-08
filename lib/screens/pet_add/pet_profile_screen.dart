@@ -25,8 +25,6 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
   int _selectedIndex = 2;
   late KakaoAppUser appUser;
 
-
-
   String get formattedTime {
     return petProfileData != null
         ? DateFormat('yyyy년   MM월   dd일').format(DateTime.parse(
@@ -49,9 +47,6 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
           .getPet(widget.appUser!.user_id)) as List<Map<String, dynamic>>;
 
       print('Pet Data: $data');
-
-
-
       return data;
     } catch (error) {
       print('Error loading pet profile data: $error');
@@ -92,14 +87,18 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
       case 1:
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => PetAnotherListScreen(appUser: appUser,)),
+          MaterialPageRoute(
+              builder: (context) => PetAnotherListScreen(
+                appUser: appUser,
+              )),
               (route) => false,
         );
         break;
       case 2:
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => PetProfileScreen(appUser: widget.appUser)),
+          MaterialPageRoute(
+              builder: (context) => PetProfileScreen(appUser: widget.appUser)),
               (route) => false,
         );
         break;
@@ -133,7 +132,6 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
               fontSize: 22,
               fontWeight: FontWeight.w600,
             ),
-
           ),
         ),
       ),
@@ -150,6 +148,7 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
     if (petProfileData != null) {
       return Scaffold(
         body: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Padding(
               padding: const EdgeInsets.only(left: 9.0),
@@ -160,126 +159,140 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(30),
                   image: DecorationImage(
-                    image: AssetImage('assets/images/profile_images/pet_profile_card.png'),
-                  ),
+                      image: AssetImage(
+                          'assets/images/profile_images/pet_profile_card.png'),
+                      fit: BoxFit.fill),
                   boxShadow: [
                     BoxShadow(
                       color: Color(0x1E000000),
-                      blurRadius: 12,
-                      offset: Offset(4, 4),
                       spreadRadius: 0,
+                      blurRadius: 30.0,
+                      offset: Offset(0, 20),
                     ),
                   ],
                 ),
-                child: Stack(
-                  children: [
-                    Positioned(
-                      left: 117,
-                      top: 20.0,
-                      child: Text(
-                        '${petProfileData!['pet_name']} 전화번호',
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w600),
-                      ),
-                    ),
-                    Positioned(
-                      top: 106.0,
-                      left: 71,
-                      child: Text('펫 이름:   ${petProfileData!['pet_name']}'),
-                    ),
-                    Positioned(
-                      top: 53.5,
-                      left: 20.0,
-                      child: Text(
-                        '전화번호 :   ${petProfileData!['pet_phone']}',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
+                child: Container(
+                  padding: EdgeInsets.only(left: 15),
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        left: 117,
+                        top: 20.0,
+                        child: Text(
+                          '${petProfileData!['pet_name']} 전화번호',
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.w600),
                         ),
                       ),
-                    ),
-                    Positioned(
-                      top: 96.5,
-                      left: 198,
-                      child: Text(
-                        '펫 종:   ${petProfileData!['pet_breed']}',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
+                      Positioned(
+                        top: 106.0,
+                        left: 71,
+                        child: Text('펫 이름:   ${petProfileData!['pet_name']}'),
+                      ),
+                      Positioned(
+                        top: 53.5,
+                        left: 20.0,
+                        child: Text(
+                          '전화번호 :   ${petProfileData!['pet_phone']}',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
                       ),
-                    ),
-                    Positioned(
-                      top: 74.5,
-                      left: 198,
-                      child: Text(
-                        '성 별:   ${petProfileData!['pet_gender']}',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
+                      Positioned(
+                        top: 84.5,
+                        left: 71,
+                        child: Text(
+                          '반려인:   ${widget.appUser?.nickname}',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
                       ),
-                    ),
-                    Positioned(
-                      top: 118,
-                      left: 198,
-                      child: Text(
-                        '모 색:   ${petProfileData!['pet_fur_color']}',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
+                      Positioned(
+                        top: 166,
+                        left: 115,
+                        child: Text(
+                          formattedTime,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
-                    ),
-                    Positioned(
-                      top: 139.5,
-                      left: 198,
-                      child: Text(
-                        '나 이:   ${petProfileData!['pet_age']}',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
+                      Positioned(
+                        top: 84,
+                        left: 21,
+                        child:
+                        _buildImageFromBase64(petProfileData?['pet_images']),
+                      ),
+
+                      Container(
+                        child: Stack(
+                          children: [
+                            Positioned(
+                              top: 96.5,
+                              left: 198,
+                              child: Text(
+                                '펫 종:   ${petProfileData!['pet_breed']}',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              top: 74.5,
+                              left: 198,
+                              child: Text(
+                                '성 별:   ${petProfileData!['pet_gender']}',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              top: 118,
+                              left: 198,
+                              child: Text(
+                                '모 색:   ${petProfileData!['pet_fur_color']}',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              top: 139.5,
+                              left: 198,
+                              child: Text(
+                                '나 이:   ${petProfileData!['pet_age']}',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                    Positioned(
-                      top: 84.5,
-                      left: 71,
-                      child: Text(
-                        '반려인:   ${widget.appUser?.nickname}',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                        ),
+
+                      //========
+
+                      Positioned(
+                        top: 162,
+                        right: 30,
+                        child: Image.asset(
+                            'assets/images/profile_images/pet_profile_witdog_logo.png'),
                       ),
-                    ),
-                    Positioned(
-                      top: 166,
-                      left: 109,
-                      child: Text(
-                        formattedTime,
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      top: 84,
-                      left: 21,
-                      child:
-                      _buildImageFromBase64(petProfileData?['pet_images']),
-                    ),
-                    Positioned(
-                      top: 162,
-                      left: 286,
-                      child: Image.asset(
-                          'assets/images/profile_images/pet_profile_witdog_logo.png'),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
+            )
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(

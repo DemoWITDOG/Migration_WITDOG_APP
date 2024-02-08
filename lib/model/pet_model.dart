@@ -124,7 +124,7 @@ class PetModel {
   }
   String generateRandomNumber() {
     // 4자리 난수 생성
-    String randomNum = (Random().nextInt(9000) + 1000).toString();
+    String randomNum = (Random().nextInt(9) + 1).toString();
     return randomNum;
   }
 
