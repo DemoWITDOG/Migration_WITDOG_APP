@@ -184,11 +184,11 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
                               fontSize: 18, fontWeight: FontWeight.w600),
                         ),
                       ),
-                      Positioned(
+/*                      Positioned(
                         top: 106.0,
                         left: 71,
                         child: Text('펫 이름:   ${petProfileData!['pet_name']}'),
-                      ),
+                      ),*/
                       Positioned(
                         top: 53.5,
                         left: 20.0,
@@ -201,8 +201,8 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
                         ),
                       ),
                       Positioned(
-                        top: 84.5,
-                        left: 71,
+                        top: 53.5,
+                        left: 198,
                         child: Text(
                           '반려인:   ${widget.appUser?.nickname}',
                           style: TextStyle(
@@ -223,10 +223,15 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
                         ),
                       ),
                       Positioned(
-                        top: 84,
+                        top: 74,
                         left: 21,
                         child:
-                        _buildImageFromBase64(petProfileData?['pet_images']),
+                            Container(
+                              width: 130,
+                              height:80,
+                                padding: EdgeInsets.zero,
+                                child: _buildImageFromBase64(petProfileData?['pet_images']),
+                            ),
                       ),
 
                       Container(
