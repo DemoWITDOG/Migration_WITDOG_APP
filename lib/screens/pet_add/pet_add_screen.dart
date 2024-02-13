@@ -254,6 +254,8 @@ class _PetAddScreenState extends State<PetAddScreen> {
     '포메라니안',
     '푸들',
     '믹스견'
+    '달마시안'
+    '사모에드'
   ];
   List<String> dogColor = [
     '크림색',
@@ -906,35 +908,6 @@ class _PetAddScreenState extends State<PetAddScreen> {
                     Row(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(right: 12.0),
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.zero,
-                              minimumSize: Size(96, 56),
-                              backgroundColor: Color(0xFF262121),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                randomNumberText =
-                                    PetModel().generateRandomNumber1();
-                              });
-                              _setControllerText(); // 수정된 부분: 터치할 때 컨트롤러 텍스트 갱신
-                              print('랜덤번호 생성: $randomNumberText');
-                            },
-                            child: Text(
-                              '랜덤번호',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Padding(
                           padding: const EdgeInsets.only(right: 16.0),
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
@@ -974,7 +947,36 @@ class _PetAddScreenState extends State<PetAddScreen> {
                               ),
                             ),
                           ),
-                        )
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 12.0),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                              minimumSize: Size(96, 56),
+                              backgroundColor: Color(0xFF262121),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                randomNumberText =
+                                    PetModel().generateRandomNumber1();
+                              });
+                              _setControllerText(); // 수정된 부분: 터치할 때 컨트롤러 텍스트 갱신
+                              print('랜덤번호 생성: $randomNumberText');
+                            },
+                            child: Text(
+                              '랜덤번호',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ],

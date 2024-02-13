@@ -37,6 +37,8 @@ dependencies:
   qr_flutter: ^4.1.0
   camera: ^0.10.5+9
   qr_code_scanner: ^1.0.1
+  dio: ^5.4.0
+  url_launcher: ^6.2.4
 
 dev_dependencies:
   flutter_test:

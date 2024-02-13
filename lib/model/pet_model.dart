@@ -167,7 +167,7 @@ class PetModel {
         '달마시안':'U',  //추가
         '사모예드':'V'   //추가
       };
-      String breedCode = breedNCode[selectedBreed] ?? 'U';
+      String breedCode = breedNCode[selectedBreed] ?? 'W';
       //펫 나이에 따른 코드부여
       String age = selectedPetAge;
       print('개나이 : $age');

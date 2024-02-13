@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,6 +10,7 @@ import 'package:testing_pet/screens/routing/routing_helper.dart';
 import 'package:testing_pet/screens/video_screen/video_chat_screen.dart';
 import 'package:testing_pet/widgets/buttom_navbar_items.dart';
 import 'package:testing_pet/widgets/service_guide_dialog.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TabHomeScreen extends StatefulWidget {
   late String petIdentity;
@@ -23,11 +25,13 @@ class _TabHomeScreen extends State<TabHomeScreen> {
   bool _appBarVisible = true;
   int _selectedIndex = 0;
   late String petIdentity; // petIdentity 변수 추가
+  final dio = Dio();
 
   @override
   void initState() {
     super.initState();
     petIdentity = widget.petIdentity; // widget에서 petIdentity 값 가져오기
+    _getWitdogPage();
   }
 
   void _performLogout(BuildContext context) async {
@@ -43,6 +47,14 @@ class _TabHomeScreen extends State<TabHomeScreen> {
       _selectedIndex = index;
     });
     routingHelper(context, index, _selectedIndex);
+  }
+
+  void _getWitdogPage() async {
+    final Uri _url = Uri.parse('https://smartwarekorea.com');
+
+    if (!await launchUrl(_url)) {
+      throw Exception('Could not launch $_url');
+    }
   }
 
   static List<Widget> _widgetOptions() => [
@@ -113,12 +125,7 @@ class _TabHomeScreen extends State<TabHomeScreen> {
                   color: Color(0xFF6ABFB9),
                   child: InkWell(
                     onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return ServiceGuideDialog();
-                        },
-                      );
+                      _getWitdogPage();
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(20.0),
