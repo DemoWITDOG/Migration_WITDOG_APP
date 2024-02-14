@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:testing_pet/model/user.dart';
 import 'package:testing_pet/provider/pet_provider.dart';
 import 'package:testing_pet/screens/chatbot/chat_bot_ai.dart';
 import 'package:testing_pet/screens/message/message_screen.dart';
@@ -25,12 +24,10 @@ class _TabHomeScreen extends State<TabHomeScreen> {
   int _selectedIndex = 0;
   late String petIdentity; // petIdentity 변수 추가
 
-
   @override
   void initState() {
     super.initState();
     petIdentity = widget.petIdentity; // widget에서 petIdentity 값 가져오기
-
   }
 
   void _performLogout(BuildContext context) async {
@@ -151,10 +148,7 @@ class _TabHomeScreen extends State<TabHomeScreen> {
                       context,
                       '챗 커뮤니티',
                       'assets/images/index_images/demo_chatbot.png',
-                      MessageScreen(
-                        petIdentity: petIdentity,
-                      ),
-                  ),
+                      MessageScreen(petIdentity: petIdentity)),
                   buildCard(
                     context,
                     '영상 통화',

@@ -1,7 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 import 'package:testing_pet/model/user.dart';
 import 'package:testing_pet/screens/chatbot/chat_bot_ai.dart';
 import 'package:testing_pet/screens/message/message_screen.dart';
@@ -14,6 +16,7 @@ import 'package:testing_pet/screens/video_screen/video_chat_screen.dart';
 import 'package:testing_pet/widgets/buttom_navbar_items.dart';
 import 'package:testing_pet/widgets/guest_dialog.dart';
 import 'package:testing_pet/widgets/service_guide_dialog.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
   final KakaoAppUser appUser;
@@ -29,6 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _appBarVisible = true;
   late KakaoAppUser appUser;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final dio = Dio();
 
 
   _HomeScreenState({required this.appUser});
@@ -43,6 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
       print('Unexpected type for widget.appUser');
     }
     _scaffoldKey = GlobalKey<ScaffoldState>();
+    _getWitdogPage();
 
   }
 
@@ -83,6 +88,14 @@ class _HomeScreenState extends State<HomeScreen> {
         PetAnotherListScreen(appUser: appUser,),
         PetProfileScreen(appUser: appUser)
       ];
+
+  void _getWitdogPage() async {
+    final Uri _url = Uri.parse('https://smartwarekorea.com');
+
+      if (!await launchUrl(_url)) {
+        throw Exception('Could not launch $_url');
+      }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -178,12 +191,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: Color(0xFFD4ECEA),
                   child: InkWell(
                     onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return ServiceGuideDialog();
-                        },
-                      );
+                      _getWitdogPage();
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(1),
