@@ -112,7 +112,7 @@ class _ChatBotAiState extends State<ChatBotAi> {
                                       hintText: '궁금하신 것을 물어보세요',
                                       hintStyle: TextStyle(
                                         fontSize: 18,
-                                        color: Color.fromRGBO(227, 227, 227, 1.0), // 정수 값으로 지정된 RGB 값
+                                        color: Color.fromRGBO(227, 227, 227, 1.0),
                                         fontWeight: FontWeight.w500,
                                       ),
                                       contentPadding: EdgeInsets.symmetric(

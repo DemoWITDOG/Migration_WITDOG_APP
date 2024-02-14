@@ -4,6 +4,7 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
@@ -25,24 +26,30 @@ class PetAddScreen extends StatefulWidget {
 
 class _PetAddScreenState extends State<PetAddScreen> {
   late KakaoAppUser appUser;
+
   _PetAddScreenState({required this.appUser});
+
   PetModel petModel = PetModel();
 
-
-  String petName = ''; //별칭
-  String selectedBreed = ''; //품종
-  String selectedFurColor = ''; //
+  String petName = ''; // 별칭
+  String selectedBreed = ''; // 품종
+  String selectedFurColor = ''; // 털색
   String selectedDropdown = '';
   String selectedGender = '암컷';
   bool selectedIsNeutered = false;
   String petAge = '';
   String randomNumberText = '';
+  String userEnteredNumber = '';
+  String randomNumberHistory = '';
+  String userEnteredNumberHistory = '';
+  bool isDuplicate = false;
   String petIdentity = (Random().nextInt(900000) + 100000).toString();
   String duplicateText = '';
+  bool isRandomMode = true; // 랜덤 모드 여부를 나타내는 변수 추가
+  String userEnteredNumberText = '';
   late ImagePicker picker;
   XFile? image;
   Uint8List? imageBytes;
-  bool isDuplicate = false;
 
   Future<void> initializeImagePicker() async {
     picker = ImagePicker();
@@ -99,7 +106,7 @@ class _PetAddScreenState extends State<PetAddScreen> {
   Future<void> _pickImage() async {
     final ImagePicker picker = ImagePicker();
     final XFile? pickedImage =
-        await picker.pickImage(source: ImageSource.gallery);
+    await picker.pickImage(source: ImageSource.gallery);
 
     setState(() {
       image = pickedImage;
@@ -163,41 +170,64 @@ class _PetAddScreenState extends State<PetAddScreen> {
   }
 
   void checkForDuplicates() async {
-    // Supabase를 사용하여 중복 확인
-    bool isDuplicate = await simulateDuplicateCheck();
+    List<String> lastFourDigitsList = await getPetPhoneLastFourDigits();
+    // 중복 확인
+    bool isDuplicates =
+    lastFourDigitsList.any((digits) => randomNumberText.contains(digits));
 
+    // 중복 여부에 따라 메시지 업데이트
     setState(() {
-      if (isDuplicate) {
+      if (isDuplicates) {
         // 중복된 경우 - 빨간색으로 표시
-        randomNumberText = '이 번호는 이미 등록되었습니다.';
+        duplicateText = '이 번호는 이미 등록되었습니다.';
       } else {
         // 사용 가능한 경우 - 초록색으로 표시
-        randomNumberText = '사용 가능한 번호입니다.';
+        isDuplicate = true;
+        duplicateText = '사용 가능한 번호입니다.';
       }
     });
   }
 
-// Supabase를 사용하여 중복 확인하는 함수
-  Future<bool> simulateDuplicateCheck() async {
-    try {
-      // 마지막 4자리 추출
-      String last4Digits = phoneNumberController.text.substring(phoneNumberController.text.length - 4);
+  void checkForUserEnteredDuplicates() async {
+    List<String> userLastFourDigitsList = await getPetPhoneLastFourDigits();
+    print('userEnteredNumberText:${userEnteredNumberText}');
+    // 중복 확인
+    print('userLastFourDigitsList:$userLastFourDigitsList ');
+    bool isDuplicates = userLastFourDigitsList
+        .any((digits) => userEnteredNumberText.contains(digits));
 
-      // Check for duplicates using Supabase API
-      final response = await supabase
-          .from('Add_UserPet')
-          .select()
-          .ilike('pet_phone', '%$last4Digits')  // 마지막 4자리와 일치하는지 비교
-          .single();
+    // 중복 여부에 따라 메시지 업데이트
+    setState(() {
+      if (isDuplicates) {
+        // 중복된 경우 - 빨간색으로 표시
+        duplicateText = '이 번호는 이미 등록되었습니다.';
+      } else {
+        // 사용 가능한 경우 - 초록색으로 표시
+        isDuplicate = true;
+        duplicateText = '사용 가능한 번호입니다.';
+      }
+    });
+  }
 
-      // Check if there is a response from Supabase and determine whether it is a duplicate
-      print(response); // For debugging
-      return response != null;
-    } catch (e) {
-      // Error handling: In case of Supabase PostgREST error
-      print('Supabase PostgREST Error: $e');
-      return false; // or add appropriate handling for exceptions
-    }
+// Supabase에서 pet_phone의 뒤에서 4자리를 가져오는 함수
+  Future<List<String>> getPetPhoneLastFourDigits() async {
+    final response = await supabase.from('Add_UserPet').select('pet_phone');
+
+    print('phone list number : $response');
+
+    // pet_phone 값을 추출하여 뒤에서 4자리만 남기고 리스트로 만듦
+    List<String> lastFourDigitsList = response.map<String>((pet) {
+      String petPhoneValue = pet['pet_phone'];
+      print('petPhoneValue : $petPhoneValue');
+      print(
+          'petPhoneValue.substring(petPhoneValue.length - 4)${petPhoneValue.substring(petPhoneValue.length - 4)}');
+      return petPhoneValue.substring(petPhoneValue.length - 4);
+    }).toList() ??
+        [];
+
+    print('lastFourDigitsList $lastFourDigitsList');
+
+    return lastFourDigitsList;
   }
 
   TextEditingController phoneNumberController = TextEditingController();
@@ -224,6 +254,8 @@ class _PetAddScreenState extends State<PetAddScreen> {
     '포메라니안',
     '푸들',
     '믹스견'
+    '달마시안'
+    '사모에드'
   ];
   List<String> dogColor = [
     '크림색',
@@ -284,12 +316,22 @@ class _PetAddScreenState extends State<PetAddScreen> {
     return age.toString();
   }
 
+  TextEditingController _controller = TextEditingController();
+
+  void _setControllerText() {
+    setState(() {
+      _controller.text =
+      isRandomMode ? randomNumberText : userEnteredNumberText;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     AuthProvider authProvider = Provider.of<AuthProvider>(context);
     print('widget.app : ${widget.appUser.user_id}');
-
+    print('randomNumberHistory : $randomNumberHistory'); // 현재 번호를 이력에 추가)
+    print(
+        'userEnteredNumberHistory : $userEnteredNumberHistory'); // 현재 번호를 이력에 추가)
 
     return Scaffold(
       body: NestedScrollView(
@@ -313,17 +355,19 @@ class _PetAddScreenState extends State<PetAddScreen> {
                       // TODO : 시간날때 고쳐야 되는 부분
                       MaterialPageRoute(
                         builder: (context) {
-                          if (authProvider.appUser != null && authProvider.appUser is KakaoAppUser) {
-                            KakaoAppUser appUser = authProvider.appUser as KakaoAppUser;
+                          if (authProvider.appUser != null &&
+                              authProvider.appUser is KakaoAppUser) {
+                            KakaoAppUser appUser =
+                            authProvider.appUser as KakaoAppUser;
                             return HomeScreen(appUser: appUser);
                           } else {
                             // 처리할 로직이나 기본값을 반환하세요.
                             return HomeScreen(appUser: appUser);
                           }
-                        },                      ),
+                        },
+                      ),
                           (route) => false,
                     );
-
                   },
                   child: Padding(
                     padding: const EdgeInsets.only(right: 16.0),
@@ -406,23 +450,40 @@ class _PetAddScreenState extends State<PetAddScreen> {
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(33.0),
-                          child: image != null
-                              ? Image.file(File(image!.path),
-                                  width: 118, height: 118)
-                              : SvgPicture.asset(
-                                  'assets/images/profile_images/default_dog_profile.svg',
-                                  width: 118,
-                                  height: 118,
-                                ),
-                        ),
+                        if (image != null)
+                          Positioned(
+                            child: Image.file(
+                              File(image!.path),
+                              width: 184,
+                              height: 184,
+                              fit: BoxFit.fill, // 이미지를 완전히 채우도록 설정
+                            ),
+                          ),
+                        // 디폴트 이미지
+                        if (image == null)
+                          Padding(
+                            padding: const EdgeInsets.all(33.0),
+                            child: SvgPicture.asset(
+                              'assets/images/profile_images/default_dog_profile.svg',
+                              width: 118,
+                              height: 118,
+                            ),
+                          ),
                         Positioned(
                           left: 0,
                           right: 0,
                           bottom: 11,
                           child: Center(
-                            child: Text(
+                            child: image != null
+                                ? Text(
+                              '수정하기',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            )
+                                : Text(
                               '추가하기',
                               style: TextStyle(
                                 color: Colors.white,
@@ -487,7 +548,7 @@ class _PetAddScreenState extends State<PetAddScreen> {
                 ),
                 Padding(
                   padding:
-                      const EdgeInsets.only(right: 16.0, left: 16.0, top: 12),
+                  const EdgeInsets.only(right: 16.0, left: 16.0, top: 12),
                   child: Container(
                     height: 56, // DropdownButton의 높이 조절
                     width: double.infinity,
@@ -504,7 +565,7 @@ class _PetAddScreenState extends State<PetAddScreen> {
                         Expanded(
                           child: DropdownButton<String>(
                             value:
-                                selectedBreed.isNotEmpty ? selectedBreed : null,
+                            selectedBreed.isNotEmpty ? selectedBreed : null,
                             items: dogBreedList.map((String value) {
                               return DropdownMenuItem<String>(
                                 value: value,
@@ -534,7 +595,7 @@ class _PetAddScreenState extends State<PetAddScreen> {
                             ),
                             hint: Padding(
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 16.0),
+                              const EdgeInsets.symmetric(horizontal: 16.0),
                               child: Text(
                                 '반려동물 품종 선택',
                                 style: TextStyle(
@@ -553,7 +614,6 @@ class _PetAddScreenState extends State<PetAddScreen> {
                 SizedBox(
                   height: 12,
                 ),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -636,7 +696,7 @@ class _PetAddScreenState extends State<PetAddScreen> {
                             });
                           },
                           visualDensity:
-                              VisualDensity(horizontal: -4, vertical: -4),
+                          VisualDensity(horizontal: -4, vertical: -4),
                         ),
                         Text(
                           '중성화했음',
@@ -673,11 +733,13 @@ class _PetAddScreenState extends State<PetAddScreen> {
                           maximumYear: DateTime.now().year,
                           maximumDate: DateTime.now(),
                           onDateTimeChanged: (DateTime birthDay) {
-                            setState(() => petBirthDay = birthDay,);
+                            setState(
+                                  () => petBirthDay = birthDay,
+                            );
                           },
                         ),
                       ),
-                      child:Text(
+                      child: Text(
                         '${petBirthDay.year}/${petBirthDay.month}/${petBirthDay.day}',
                         style: TextStyle(
                           color: Colors.black,
@@ -693,7 +755,7 @@ class _PetAddScreenState extends State<PetAddScreen> {
                 ),
                 Padding(
                   padding:
-                      const EdgeInsets.only(right: 16.0, left: 16.0, top: 12),
+                  const EdgeInsets.only(right: 16.0, left: 16.0, top: 12),
                   child: Container(
                     height: 56, // DropdownButton의 높이 조절
                     width: double.infinity,
@@ -741,7 +803,7 @@ class _PetAddScreenState extends State<PetAddScreen> {
                             ),
                             hint: Padding(
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 16.0),
+                              const EdgeInsets.symmetric(horizontal: 16.0),
                               child: Text(
                                 '반려동물 모색 선택',
                                 style: TextStyle(
@@ -800,16 +862,34 @@ class _PetAddScreenState extends State<PetAddScreen> {
                     Expanded(
                       child: Container(
                         margin:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                        EdgeInsets.symmetric(horizontal: 16, vertical: 0),
                         height: 56,
                         child: Row(
                           children: [
                             Expanded(
                               child: TextField(
-                                controller: TextEditingController(
-                                    text: randomNumberText),
+                                controller: _controller,
                                 style: TextStyle(fontSize: 20),
                                 readOnly: false,
+                                onTap: () {
+                                  // 필드를 터치할 때 실행할 동작 정의
+                                  setState(() {
+                                    randomNumberText = '';
+                                    userEnteredNumberText = '';
+                                    userEnteredNumberHistory = '';
+                                    randomNumberHistory = '';
+                                    _setControllerText();
+                                    print('object:$userEnteredNumberText');
+                                  });
+                                },
+                                onChanged: (value) {
+                                  setState(() {
+                                    userEnteredNumberText = value;
+                                    randomNumberText = '';
+                                    userEnteredNumberHistory = '';
+                                    randomNumberHistory = '';
+                                  });
+                                },
                                 decoration: InputDecoration(
                                   hintText: '번호입력',
                                   border: InputBorder.none,
@@ -821,12 +901,53 @@ class _PetAddScreenState extends State<PetAddScreen> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
                           border:
-                              Border.all(color: Color(0xFFDDDDDD), width: 1),
+                          Border.all(color: Color(0xFFDDDDDD), width: 1),
                         ),
                       ),
                     ),
                     Row(
                       children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 16.0),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                              minimumSize: Size(96, 56),
+                              backgroundColor: Color(0xFF16C077),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            onPressed: () async {
+                              print('input random : $randomNumberText');
+                              print(
+                                  'userEnteredNumberText random : $userEnteredNumberText');
+                              print('object:$userEnteredNumberText');
+
+                              if (randomNumberText.isNotEmpty) {
+                                // 랜덤번호가 있을 때만 중복확인 수행
+                                randomNumberHistory +=
+                                    randomNumberText; // 현재 번호를 이력에 추가
+                                checkForDuplicates(); // 중복 확인
+                              } else if (userEnteredNumberText.isNotEmpty) {
+                                // 사용자가 직접 입력한 번호가 있을 때만 중복확인 수행
+                                userEnteredNumberHistory +=
+                                    userEnteredNumberText; // 사용자가 직접 입력한 번호를 이력에 추가
+                                print(
+                                    'input userEnter : $userEnteredNumberText');
+                                checkForUserEnteredDuplicates(); // 사용자가 직접 입력한 번호에 대한 중복 확인 수행
+                              }
+                            },
+                            child: Text(
+                              '중복확인',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
                         Padding(
                           padding: const EdgeInsets.only(right: 12.0),
                           child: ElevatedButton(
@@ -843,37 +964,11 @@ class _PetAddScreenState extends State<PetAddScreen> {
                                 randomNumberText =
                                     PetModel().generateRandomNumber1();
                               });
+                              _setControllerText(); // 수정된 부분: 터치할 때 컨트롤러 텍스트 갱신
+                              print('랜덤번호 생성: $randomNumberText');
                             },
                             child: Text(
                               '랜덤번호',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 16.0),
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.zero,
-                              minimumSize: Size(96, 56),
-                              backgroundColor: Color(0xFF16C077),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                            onPressed: () async {
-                              checkForDuplicates(); // 중복 확인 수행
-                            },
-                            child: Text(
-                              '중복확인',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,
@@ -895,16 +990,40 @@ class _PetAddScreenState extends State<PetAddScreen> {
                     children: [
                       Expanded(
                         child: Text(
-                          randomNumberText,
+                          duplicateText,
                           style: TextStyle(
-                            color: isDuplicate ? Colors.red : Color(0xFF45B0ED),
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
+                            color: isDuplicate ? Colors.blue : Colors.red,
                           ),
                         ),
                       ),
                     ],
                   ),
+                ),
+                Stack(
+                  children: [
+                    Positioned(
+                        child: TextButton(
+                            style: TextButton.styleFrom(
+                                minimumSize: const Size.fromHeight(56),
+                                backgroundColor: Colors.grey,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.all(Radius.zero))),
+                            onPressed: () {
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          HomeScreen(appUser: appUser)));
+                            },
+                            child: Container(
+                              child: Text(
+                                '스킵하기',
+                                style: TextStyle(color: Colors.white,
+                                    fontSize: 18),
+                              ),
+                            ))),
+                  ],
                 ),
               ],
             ),

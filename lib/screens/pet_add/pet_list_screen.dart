@@ -139,9 +139,22 @@ class _PetListScreenState extends State<PetListScreen> {
               height: 112,
               color: Colors.white,
               child: ListTile(
-                title: Text(pet.petName),
+                horizontalTitleGap: 30,
+                minVerticalPadding: 18,
+
+                title: Text(pet.petName,
+                style: TextStyle(
+                  fontSize: 22,
+                  color: Color(0xFF272222),
+                  fontWeight: FontWeight.w600,
+                ),),
                 subtitle: Text(
-                  'Age: ${pet.petAge}, ${pet.petBreed}, ${pet.petFavorite}, ${pet.petGender}',
+                  ' ${pet.petBreed},\n ${pet.petGender}, ${pet.petAge}살',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Color(0xFF272222),
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
                 leading: Container(
                   width: 92.0,
@@ -255,6 +268,8 @@ class _PetListScreenState extends State<PetListScreen> {
                         child: ElevatedButton(
                           onPressed: () {},
                           style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xFFF0F0F0),
+                            elevation: 0,
                             padding: EdgeInsets
                                 .zero, // 버튼 패딩을 0으로 설정하여 내용물을 꽉 채우도록 합니다.
                           ),

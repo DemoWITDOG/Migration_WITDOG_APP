@@ -1,20 +1,22 @@
+import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 import 'package:testing_pet/model/user.dart';
-import 'package:testing_pet/provider/auth_provider.dart';
 import 'package:testing_pet/screens/chatbot/chat_bot_ai.dart';
 import 'package:testing_pet/screens/message/message_screen.dart';
 import 'package:testing_pet/screens/pet_add/pet_add_screen.dart';
 import 'package:testing_pet/screens/pet_add/pet_another_list_screen.dart';
 import 'package:testing_pet/screens/pet_add/pet_list_screen.dart';
 import 'package:testing_pet/screens/pet_add/pet_profile_screen.dart';
-import 'package:testing_pet/screens/routing/routing_helper.dart';
+import 'package:testing_pet/screens/qr/pet_phone_qr_screen.dart';
 import 'package:testing_pet/screens/video_screen/video_chat_screen.dart';
 import 'package:testing_pet/widgets/buttom_navbar_items.dart';
 import 'package:testing_pet/widgets/guest_dialog.dart';
 import 'package:testing_pet/widgets/service_guide_dialog.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
   final KakaoAppUser appUser;
@@ -29,6 +31,9 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0; // 변경: _selectedIndex를 상태로 선언
   bool _appBarVisible = true;
   late KakaoAppUser appUser;
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final dio = Dio();
+
 
   _HomeScreenState({required this.appUser});
 
@@ -41,9 +46,16 @@ class _HomeScreenState extends State<HomeScreen> {
       // 예상치 못한 형식이라면 적절히 처리
       print('Unexpected type for widget.appUser');
     }
+    _scaffoldKey = GlobalKey<ScaffoldState>();
+    _getWitdogPage();
+
   }
 
   void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
     if (index == 0) {
       print('print guest user :${widget.appUser.user_id}');
 
@@ -77,10 +89,21 @@ class _HomeScreenState extends State<HomeScreen> {
         PetProfileScreen(appUser: appUser)
       ];
 
+  void _getWitdogPage() async {
+    final Uri _url = Uri.parse('https://smartwarekorea.com');
+
+      if (!await launchUrl(_url)) {
+        throw Exception('Could not launch $_url');
+      }
+  }
+
   @override
   Widget build(BuildContext context) {
+
     print('widget.appUser: ${widget.appUser.user_id}');
     return Scaffold(
+      key: _scaffoldKey, // 이 부분을 추가해주세요
+
       appBar: _appBarVisible
           ? AppBar(
               iconTheme: IconThemeData(color: Colors.grey),
@@ -120,8 +143,39 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                 ),
                 SizedBox(width: 15),
+                IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PetPhoneQrScreen(),
+                      ),
+                    );
+                  },
+                  icon: Image.asset('assets/images/index_images/demo_user_add.png',
+                    color: Colors.grey,
+
+                  ),
+                ),
+                Builder(
+                  builder: (BuildContext context) {
+                    return IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _scaffoldKey.currentState?.openDrawer(); // or openEndDrawer()
+                        });
+                      },
+                      icon: Icon(
+                        Icons.menu,
+                        color: Colors.grey,
+                        size: 30,
+                      ),
+                    );
+                  },
+                )
               ],
-            )
+      )
+
           : null,
       body: CustomScrollView(
         slivers: [
@@ -137,12 +191,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: Color(0xFFD4ECEA),
                   child: InkWell(
                     onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return ServiceGuideDialog();
-                        },
-                      );
+                      _getWitdogPage();
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(1),
@@ -206,6 +255,59 @@ class _HomeScreenState extends State<HomeScreen> {
         items: bottomNavBarItems,
         selectedItemColor: const Color(0xFF01DF80),
         showUnselectedLabels: true,
+      ),
+    );
+  }
+
+  Widget buildDrawer(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: <Widget>[
+          Container(
+            height: 150,
+            child: DrawerHeader(
+              decoration: BoxDecoration(
+                color: Color(0xFF6ABFB9),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20),
+                ),
+              ),
+              child: Text(
+                '메뉴',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.home,
+              color: Colors.grey[850],
+            ),
+            title: Text('홈'),
+            onTap: () {
+              // 변경: 홈 아이콘을 누를 때마다 홈 화면으로 이동하도록 수정
+              setState(() {
+                _selectedIndex = 0;
+              });
+              Navigator.pop(context);
+            },
+          ),
+          ListTile(
+            leading: Icon(
+              Icons.logout,
+              color: Colors.grey[850],
+            ),
+            title: Text('로그아웃'),
+            onTap: () {
+              _performLogout(context);
+            },
+          )
+        ],
       ),
     );
   }
