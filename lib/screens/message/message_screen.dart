@@ -35,7 +35,7 @@ class _MessageScreenState extends State<MessageScreen> {
   }
 
   void _initializeMessagesStream()  {
-    final myUserId = widget.appUser!.user_id;
+    final myUserId = widget.appUser?.user_id;
 
     // Supabase's utility system
     final chatIdentity = supabase
