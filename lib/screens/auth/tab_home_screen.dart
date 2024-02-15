@@ -105,7 +105,7 @@ class _TabHomeScreen extends State<TabHomeScreen> {
         body: CustomScrollView(
           slivers: [
             SliverToBoxAdapter(
-              child: Container(
+/*              child: Container(
                 height: 320,
                 color: Color(0xFF6ABFB9),
                 child: Card(
@@ -137,7 +137,7 @@ class _TabHomeScreen extends State<TabHomeScreen> {
                     ),
                   ),
                 ),
-              ),
+              ),*/
             ),
             SliverPadding(
               padding: EdgeInsets.all(25),

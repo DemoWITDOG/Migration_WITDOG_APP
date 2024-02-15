@@ -210,8 +210,8 @@ class _MessageScreenState extends State<MessageScreen> {
                       // 현재 사용자의 메시지 여부 확인
                       bool isCurrentUserMessage =  widget.appUser != null
                           ? message.userId == widget.appUser?.user_id ||
-                          message.petId == widget.petIdentity :
-                      message.userId == widget.appUser?.user_id &&
+                          message.petId == widget.petIdentity
+                          : message.userId == widget.appUser?.user_id ||
                           message.petId == widget.petIdentity;
 
                       print('isCurrentUserMessage : $isCurrentUserMessage');

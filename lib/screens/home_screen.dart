@@ -34,7 +34,6 @@ class _HomeScreenState extends State<HomeScreen> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final dio = Dio();
 
-
   _HomeScreenState({required this.appUser});
 
   @override
@@ -47,8 +46,6 @@ class _HomeScreenState extends State<HomeScreen> {
       print('Unexpected type for widget.appUser');
     }
     _scaffoldKey = GlobalKey<ScaffoldState>();
-    _getWitdogPage();
-
   }
 
   void _onItemTapped(int index) {
@@ -85,27 +82,27 @@ class _HomeScreenState extends State<HomeScreen> {
 
   static List<Widget> _widgetOptions(KakaoAppUser appUser) => [
         HomeScreen(appUser: appUser),
-        PetAnotherListScreen(appUser: appUser,),
+        PetAnotherListScreen(
+          appUser: appUser,
+        ),
         PetProfileScreen(appUser: appUser)
       ];
 
   void _getWitdogPage() async {
     final Uri _url = Uri.parse('https://smartwarekorea.com');
 
-      if (!await launchUrl(_url)) {
-        throw Exception('Could not launch $_url');
-      }
+    if (!await launchUrl(_url)) {
+      throw Exception('Could not launch $_url');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-
     print('widget.appUser: ${widget.appUser.user_id}');
     return Scaffold(
-      key: _scaffoldKey, // 이 부분을 추가해주세요
-
-      appBar: _appBarVisible
-          ? AppBar(
+      key: _scaffoldKey,
+      endDrawer: buildDrawer(context),
+      appBar: AppBar(
               iconTheme: IconThemeData(color: Colors.grey),
               backgroundColor: Colors.white,
               toolbarHeight: 65,
@@ -142,7 +139,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     );
                   },
                 ),
-                SizedBox(width: 15),
                 IconButton(
                   onPressed: () {
                     Navigator.push(
@@ -152,108 +148,177 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     );
                   },
-                  icon: Image.asset('assets/images/index_images/demo_user_add.png',
+                  icon: Image.asset(
+                    'assets/images/index_images/demo_user_add.png',
                     color: Colors.grey,
-
                   ),
                 ),
-                Builder(
-                  builder: (BuildContext context) {
-                    return IconButton(
-                      onPressed: () {
-                        setState(() {
-                          _scaffoldKey.currentState?.openDrawer(); // or openEndDrawer()
-                        });
-                      },
-                      icon: Icon(
-                        Icons.menu,
-                        color: Colors.grey,
-                        size: 30,
-                      ),
-                    );
+                IconButton(
+                  onPressed: () {
+                    _scaffoldKey.currentState?.openEndDrawer(); // Builder 내에서 Scaffold.of 사용
                   },
-                )
+                  icon: Icon(
+                    Icons.menu,
+                    color: Colors.grey,
+                    size: 30,
+                  ),
+                ),
               ],
-      )
-
-          : null,
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            expandedHeight: 220,
-            pinned: true,
-            floating: false,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Container(
-                color: Color(0xFFD4ECEA),
-                child: Card(
-                  elevation: 1.5,
-                  color: Color(0xFFD4ECEA),
-                  child: InkWell(
-                    onTap: () {
-                      _getWitdogPage();
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(1),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+            ),
+      body: Container(
+        color: Colors.white, // 흰색 배경으로 설정
+        child: ListView(
+          children: [
+            InkWell(
+              onTap: () {
+                _getWitdogPage();
+              },
+              child: Container(
+                color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 12),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Row(
                         children: [
-                          Column(
-                            children: [
-                              Image.asset(
-                                  'assets/images/index_images/demo_dialog.png'),
-                            ],
+                          Align(
+                            alignment: Alignment.topCenter, // 또는 다른 정렬을 선택하세요
+                            child: Column(
+                              children: [
+                                Text(
+                                  '윗독에\n오신 것을\n환영해요',
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    _getWitdogPage();
+                                  },
+                                  child: Text(
+                                    '서비스 소개',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 12),
+                                  ),
+                                  style: ButtonStyle(
+                                    fixedSize:
+                                        MaterialStateProperty.all(Size(98, 30)),
+                                    backgroundColor: MaterialStateProperty.all(
+                                        Color(0xFF6A9E85)),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Image.asset(
+                            'assets/images/index_images/demo_dialog.png',
+                            width: 160,
+                            height: 155,
                           ),
                         ],
                       ),
-                    ),
+                    ],
                   ),
                 ),
               ),
             ),
-          ),
-          SliverPadding(
-            padding: EdgeInsets.all(10),
-            sliver: SliverGrid.count(
-              crossAxisCount: 2,
-              children: [
-                buildCard(
-                  context,
-                  '영상 통화',
-                  'assets/images/index_images/demo_video_call.png',
-                  VideoChatScreen(callerId: appUser.user_id),
-                ),
-                buildCard(
-                  context,
-                  '채팅',
-                  'assets/images/index_images/demo_chat.png',
-                  MessageScreen(
-                    appUser: appUser,
-                    petIdentity: '',
-                  ),
-                ),
-                buildCard(
-                  context,
-                  '펫 봇',
-                  'assets/images/index_images/demo_chatbot.png',
-                  ChatBotAi(),
-                ),
-                buildCard(
-                  context,
-                  '반려 프로필',
-                  'assets/images/index_images/demo_community.png',
-                  PetListScreen(appUser: appUser),
-                ),
-              ],
+            SizedBox(
+              height: 58,
             ),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.only(left: 25.0, right: 25.0),
+              child: GridView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                ),
+                itemCount: 4,
+                itemBuilder: (context, index) {
+                  switch (index) {
+                    case 0:
+                      return buildCard(
+                        context,
+                        '문자하기',
+                        'assets/images/index_images/demo_chat.png',
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MessageScreen(
+                                appUser: appUser,
+                                petIdentity: '',
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    case 1:
+                      return buildCard(
+                        context,
+                        '영상통화하기',
+                        'assets/images/index_images/demo_video_call.png',
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  VideoChatScreen(callerId: appUser.user_id),
+                            ),
+                          );
+                        },
+                      );
+                    case 2:
+                      return buildCard(
+                        context,
+                        '챗봇하기',
+                        'assets/images/index_images/demo_chatbot.png',
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    ChatBotAi()), // YourPetbotScreen은 실제로 이동하고자 하는 화면으로 변경해야 합니다.
+                          );
+                        },
+                      );
+                    case 3:
+                      return buildCard(
+                        context,
+                        '커뮤니티',
+                        'assets/images/index_images/demo_community.png',
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  PetListScreen(appUser: appUser),
+                            ),
+                          );
+                        },
+                      );
+                    default:
+                      return Container(); // Handle additional cases
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex < bottomNavBarItems.length ? _selectedIndex : 0,
+        currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         items: bottomNavBarItems,
-        selectedItemColor: const Color(0xFF01DF80),
+        selectedItemColor: const Color(0xFF6A9E85),
         showUnselectedLabels: true,
       ),
     );
@@ -261,68 +326,81 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget buildDrawer(BuildContext context) {
     return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: <Widget>[
-          Container(
-            height: 150,
-            child: DrawerHeader(
-              decoration: BoxDecoration(
-                color: Color(0xFF6ABFB9),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(20),
-                  bottomRight: Radius.circular(20),
+      child: Container(
+        color: Colors.white,
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0, top:16.0, right: 16.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    _selectedIndex = 0;
+                  });
+                  Navigator.pop(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xffE0E0E0),
+                  fixedSize: Size(241, 56),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      '홈',
+                      style: TextStyle(
+                        color: Color(0xff272222),
+                        fontSize: 18.0,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              child: Text(
-                '메뉴',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0, top:12.0, right: 16.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  _performLogout(context);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xffE0E0E0),
+                  fixedSize: Size(241, 56),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      '로그아웃',
+                      style: TextStyle(
+                        color: Color(0xff272222),
+                        fontSize: 18.0,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-          ),
-          ListTile(
-            leading: Icon(
-              Icons.home,
-              color: Colors.grey[850],
-            ),
-            title: Text('홈'),
-            onTap: () {
-              // 변경: 홈 아이콘을 누를 때마다 홈 화면으로 이동하도록 수정
-              setState(() {
-                _selectedIndex = 0;
-              });
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            leading: Icon(
-              Icons.logout,
-              color: Colors.grey[850],
-            ),
-            title: Text('로그아웃'),
-            onTap: () {
-              _performLogout(context);
-            },
-          )
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  Widget buildCard(
-      BuildContext context, String title, String imagePath, Widget route) {
-    return Card(
-      color: Color(0xFFD4ECEA),
-      elevation: 1.5,
-      child: InkWell(
-        onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return route;
-          }));
-        },
+  Widget buildCard(BuildContext context, String title, String imagePath,
+      {VoidCallback? onTap}) {
+    return InkWell(
+      onTap: onTap, // 여기에서 onTap을 설정합니다.
+      child: Card(
+        color: Color(0xFF6A9E85),
+        elevation: 1.5,
         child: Container(
           alignment: Alignment.center,
           child: Column(
@@ -331,7 +409,10 @@ class _HomeScreenState extends State<HomeScreen> {
               Image.asset(imagePath, width: 100, height: 100),
               Text(
                 title,
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500),
               ),
             ],
           ),
