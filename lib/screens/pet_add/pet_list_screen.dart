@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:testing_pet/model/PetList.dart';
 import 'package:testing_pet/model/user.dart';
 import 'package:testing_pet/screens/pet_add/pet_add_screen.dart';
+import 'package:testing_pet/screens/pet_add/pet_another_list_screen.dart';
 import 'package:testing_pet/utils/constants.dart';
 
 class PetListScreen extends StatefulWidget {
@@ -141,13 +142,22 @@ class _PetListScreenState extends State<PetListScreen> {
               child: ListTile(
                 horizontalTitleGap: 30,
                 minVerticalPadding: 18,
-
-                title: Text(pet.petName,
-                style: TextStyle(
-                  fontSize: 22,
-                  color: Color(0xFF272222),
-                  fontWeight: FontWeight.w600,
-                ),),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PetAnotherListScreen(
+                            appUser: widget.appUser),
+                      ));
+                },
+                title: Text(
+                  pet.petName,
+                  style: TextStyle(
+                    fontSize: 22,
+                    color: Color(0xFF272222),
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
                 subtitle: Text(
                   ' ${pet.petBreed},\n ${pet.petGender}, ${pet.petAge}살',
                   style: TextStyle(
@@ -266,7 +276,15 @@ class _PetListScreenState extends State<PetListScreen> {
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 12.0),
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PetAnotherListScreen(
+                                      appUser: widget.appUser),
+                                ));
+                            print('pet PetAnotherListScreen appUser ${widget.appUser}');
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Color(0xFFF0F0F0),
                             elevation: 0,

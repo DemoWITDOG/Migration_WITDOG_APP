@@ -156,6 +156,7 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
                 margin: EdgeInsets.all(16),
                 width: 328,
                 height: 203,
+
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(30),
                   image: DecorationImage(

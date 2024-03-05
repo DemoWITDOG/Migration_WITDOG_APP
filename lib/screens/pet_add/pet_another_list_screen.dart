@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:testing_pet/model/PetList.dart';
 import 'package:testing_pet/model/user.dart';
 import 'package:testing_pet/screens/pet_add/pet_add_screen.dart';
+import 'package:testing_pet/screens/qr/pet_qr_camera_screen.dart';
 import 'package:testing_pet/utils/constants.dart';
 
 class PetAnotherListScreen extends StatefulWidget {
@@ -130,50 +131,74 @@ class _PetAnotherListScreenState extends State<PetAnotherListScreen> {
       fit: BoxFit.fill,
     );
 
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(right: 16.0, left: 16.0),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(12.0),
-            child: Container(
-              height: 112,
-              color: Colors.white,
-              child: ListTile(
-                trailing: Icon(Icons.close_outlined,
-                  size: 30,),
-                horizontalTitleGap: 30,
-                minVerticalPadding: 30,
-                title: Text(pet.petName,
-                  style: TextStyle(
-                    fontSize: 22,
-                    color: Color(0xFF272222),
-                    fontWeight: FontWeight.w600,
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0, left: 16.0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12.0),
+              child: Container(
+                height: 116,
+                color: Colors.white,
+                child: ListTile(
+                  trailing: Column(
+                    children: [
+                      IconButton(onPressed: (){}, icon: Icon(Icons.close,size: 10,)),
+                      GestureDetector(
+                        onTap: ()  {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Container(),
+                            ),
+                          );
+                        },
+                        child: Container(height: 30,
+                          child: Text(
+                            '연결하기',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
                   ),
-                ),
-                subtitle: Text(
-                  '${pet.petPhone}',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Color(0xFF272222),
-                    fontWeight: FontWeight.w500,
+                  horizontalTitleGap: 30,
+                  minVerticalPadding: 30,
+                  title: Text(pet.petName,
+                    style: TextStyle(
+                      fontSize: 22,
+                      color: Color(0xFF272222),
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
-                isThreeLine: true,
-                dense: false,
-                leading: Container(
-                  width: 92.0,
-                  height: 92.0,
-                  child: FittedBox(
-                    fit: BoxFit.fill,
-                    child: petImage,
+                  subtitle: Text(
+                    '${pet.petPhone}',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Color(0xFF272222),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  isThreeLine: true,
+                  dense: false,
+                  leading: Container(
+                    width: 92.0,
+                    height: 92.0,
+                    child: FittedBox(
+                      fit: BoxFit.fill,
+                      child: petImage,
+                    ),
                   ),
                 ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -199,7 +224,7 @@ class _PetAnotherListScreenState extends State<PetAnotherListScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => PetAddScreen(appUser: appUser),
+                      builder: (context) => PetQrCameraScreen(),
                     ),
                   );
                 },
@@ -222,6 +247,7 @@ class _PetAnotherListScreenState extends State<PetAnotherListScreen> {
               color: Color(0xFFF0F0F0),
             ),
             child: Column(children: [
+              SizedBox(height: 10,),
               Padding(
                 padding: const EdgeInsets.only(left: 16.0, top: 8.0),
                 child: Align(
