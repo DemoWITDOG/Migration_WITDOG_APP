@@ -96,6 +96,14 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void _getWitdogQ() async {
+    final Uri _url = Uri.parse('https://witdog.kr');
+
+    if (!await launchUrl(_url)) {
+      throw Exception('Could not launch $_url');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     print('widget.appUser: ${widget.appUser.user_id}');
@@ -326,66 +334,149 @@ class _HomeScreenState extends State<HomeScreen> {
     return Drawer(
       child: Container(
         color: Colors.white,
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(left: 16.0, top:16.0, right: 16.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    _selectedIndex = 0;
-                  });
-                  Navigator.pop(context);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xffE0E0E0),
-                  fixedSize: Size(241, 56),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      '홈',
-                      style: TextStyle(
-                        color: Color(0xff272222),
-                        fontSize: 18.0,
+        child: Column(
+          children: [
+            SizedBox(
+              height: 50,
+            ),
+            Container(
+              height: 50,
+              child: Text('안녕하세요 ${appUser.nickname}님',
+                  style: TextStyle(
+                    fontSize: 25,
+                    fontWeight: FontWeight.w400,
+                  )),
+            ),
+            Divider(color: Colors.black12),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Column(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      PetAddScreen(appUser: appUser)));
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          backgroundColor: Color(0xffF4F4F4),
+                          minimumSize: Size(46, 55),
+                        ),
+                        child: Image.asset(
+                            'assets/images/index_images/drawer1.png'),
                       ),
-                    ),
-                  ],
-                ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        '개추가',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w500),
+                      )
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          _getWitdogQ();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          backgroundColor: Color(0xffF4F4F4),
+                          minimumSize: Size(46, 55),
+                        ),
+                        child: Image.asset(
+                            'assets/images/index_images/drawer2.png'),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        '공지사항',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w500),
+                      )
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          _getWitdogQ();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          backgroundColor: Color(0xffF4F4F4),
+                          minimumSize: Size(46, 55),
+                        ),
+                        child: Image.asset(
+                            'assets/images/index_images/drawer3.png'),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        'FAQ',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w500),
+                      )
+                    ],
+                  ),
+                ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 16.0, top:12.0, right: 16.0),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              child: TextButton(
+                  onPressed: () {
+                    _getWitdogPage();
+                  },
+                  child: Text(
+                    '스마트웨어 정보',
+                    style: TextStyle(fontSize: 20, color: Colors.black),
+                  )),
+            ),
+            Divider(
+              color: Colors.black12,
+            ),
+            SizedBox(height: 620),
+            Container(
               child: ElevatedButton(
                 onPressed: () {
                   _performLogout(context);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xffE0E0E0),
-                  fixedSize: Size(241, 56),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0),
+                    backgroundColor: Colors.white70,
+                    minimumSize: Size(241, 56),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    )),
+                child: Text(
+                  '로그아웃',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.black,
                   ),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      '로그아웃',
-                      style: TextStyle(
-                        color: Color(0xff272222),
-                        fontSize: 18.0,
-                      ),
-                    ),
-                  ],
-                ),
               ),
-            ),
+            )
           ],
         ),
       ),
