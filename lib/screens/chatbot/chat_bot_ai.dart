@@ -32,20 +32,21 @@ class _ChatBotAiState extends State<ChatBotAi> {
         child: Column(
           children: [
             Expanded(
-              child: ListView.builder(
-                reverse: true, // 새로운 메시지가 맨 위로 오도록 변경
-                itemCount: _messages.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(
-                      _messages[index].text,
-                      textAlign: _messages[index].isUser
-                          ? TextAlign.right
-                          : TextAlign.left,
-                    ),
-                    subtitle: Text(_messages[index].isUser ? '' : 'GPT'),
-                  );
-                },
+              child: SingleChildScrollView(
+                reverse: true,
+                child: Column(
+                  children: _messages.map((message) {
+                    return ListTile(
+                      title: Text(
+                        message.text,
+                        textAlign: message.isUser
+                            ? TextAlign.right
+                            : TextAlign.left,
+                      ),
+                      subtitle: Text(message.isUser ? '' : 'GPT'),
+                    );
+                  }).toList(),
+                ),
               ),
             ),
             Container(

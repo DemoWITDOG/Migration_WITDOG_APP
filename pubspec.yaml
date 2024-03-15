@@ -39,6 +39,7 @@ dependencies:
   qr_code_scanner: ^1.0.1
   dio: ^5.4.0
   url_launcher: ^6.2.4
+  flutter_launcher_icons: ^0.13.1
 
 dev_dependencies:
   flutter_test:
@@ -71,7 +72,6 @@ flutter:
     - assets/images/profile_images/default_dog_profile.svg
     - assets/images/profile_images/pet_profile_card.png
     - assets/images/profile_images/pet_profile_witdog_logo.svg
-    - assets/images/profile_images/pet_profile_witdog_logo.png
     - assets/images/profile_images/login_success.png
     - assets/images/index_images/demo_chat.png
     - assets/images/index_images/demo_video_call.png
@@ -80,5 +80,6 @@ flutter:
     - assets/images/index_images/demo_dialog.png
     - assets/images/index_images/WITDOG.png
     - assets/images/petbot_images/petbot_main_image.png
-    - assets/images/index_images/demo_user_add.png
+    - assets/images/index_images/demo_user_friend_add.png
     - assets/images/emoticon_images/emoticon_heart.png
+    - assets/images/launcher_icon/witdog_logo.png

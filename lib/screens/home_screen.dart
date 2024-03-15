@@ -149,7 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     );
                   },
                   icon: Image.asset(
-                    'assets/images/index_images/demo_user_add.png',
+                    'assets/images/index_images/demo_user_friend_add.png',
                     color: Colors.grey,
                   ),
                 ),
@@ -206,8 +206,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                         color: Colors.white, fontSize: 12),
                                   ),
                                   style: ButtonStyle(
-                                    fixedSize:
-                                        MaterialStateProperty.all(Size(98, 30)),
                                     backgroundColor: MaterialStateProperty.all(
                                         Color(0xFF6A9E85)),
                                   ),

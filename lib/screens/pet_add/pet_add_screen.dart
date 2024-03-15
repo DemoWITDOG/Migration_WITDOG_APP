@@ -222,8 +222,7 @@ class _PetAddScreenState extends State<PetAddScreen> {
       print(
           'petPhoneValue.substring(petPhoneValue.length - 4)${petPhoneValue.substring(petPhoneValue.length - 4)}');
       return petPhoneValue.substring(petPhoneValue.length - 4);
-    }).toList() ??
-        [];
+    }).toList() ?? [];
 
     print('lastFourDigitsList $lastFourDigitsList');
 

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:testing_pet/model/PetList.dart';
 import 'package:testing_pet/model/user.dart';
-import 'package:testing_pet/screens/pet_add/pet_add_screen.dart';
+import 'package:testing_pet/model/pet_model.dart';
 import 'package:testing_pet/screens/qr/pet_qr_camera_screen.dart';
 import 'package:testing_pet/utils/constants.dart';
 
@@ -139,60 +139,65 @@ class _PetAnotherListScreenState extends State<PetAnotherListScreen> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12.0),
               child: Container(
-                height: 116,
+                height: 200,
                 color: Colors.white,
-                child: ListTile(
-                  trailing: Column(
-                    children: [
-                      IconButton(onPressed: (){}, icon: Icon(Icons.close,size: 10,)),
-                      GestureDetector(
-                        onTap: ()  {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Container(),
-                            ),
-                          );
-                        },
-                        child: Container(height: 30,
-                          child: Text(
-                            '연결하기',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500
-                            ),
+                child: ListView(
+                  children: [
+                    ListTile(
+                      trailing: Container(
+                        width: 40,
+                        child: Container(
+                          child: ListView(
+                            children: [
+                              IconButton(
+                                  onPressed: () {
+                                    _deletePet(index);
+                                  },
+                                  icon: Icon(Icons.close, size: 10)),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Container(),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
                           ),
                         ),
-                      )
-                    ],
-                  ),
-                  horizontalTitleGap: 30,
-                  minVerticalPadding: 30,
-                  title: Text(pet.petName,
-                    style: TextStyle(
-                      fontSize: 22,
-                      color: Color(0xFF272222),
-                      fontWeight: FontWeight.w600,
+                      ),
+                      horizontalTitleGap: 30,
+                      minVerticalPadding: 30,
+                      title: Text(
+                        pet.petName,
+                        style: TextStyle(
+                          fontSize: 22,
+                          color: Color(0xFF272222),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      subtitle: Text(
+                        '${pet.petPhone}',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Color(0xFF272222),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      isThreeLine: true,
+                      dense: false,
+                      leading: Container(
+                        width: 92.0,
+                        height: 92.0,
+                        child: FittedBox(
+                          fit: BoxFit.fill,
+                          child: petImage,
+                        ),
+                      ),
                     ),
-                  ),
-                  subtitle: Text(
-                    '${pet.petPhone}',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Color(0xFF272222),
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  isThreeLine: true,
-                  dense: false,
-                  leading: Container(
-                    width: 92.0,
-                    height: 92.0,
-                    child: FittedBox(
-                      fit: BoxFit.fill,
-                      child: petImage,
-                    ),
-                  ),
+                  ],
                 ),
               ),
             ),
@@ -247,7 +252,9 @@ class _PetAnotherListScreenState extends State<PetAnotherListScreen> {
               color: Color(0xFFF0F0F0),
             ),
             child: Column(children: [
-              SizedBox(height: 10,),
+              SizedBox(
+                height: 10,
+              ),
               Padding(
                 padding: const EdgeInsets.only(left: 16.0, top: 8.0),
                 child: Align(
@@ -267,7 +274,7 @@ class _PetAnotherListScreenState extends State<PetAnotherListScreen> {
                 child: Column(
                   children: List.generate(
                     _petList.length,
-                        (index) {
+                    (index) {
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 12.0),
                         child: ElevatedButton(
@@ -289,5 +296,29 @@ class _PetAnotherListScreenState extends State<PetAnotherListScreen> {
                 ),
               )
             ])));
+  }
+
+  // 삭제
+  void _deletePet(int index) async {
+    int id = _petList[index].id;
+    await deletePetData(id);
+
+    setState(() {
+      _petList.removeAt(index);
+    });
+  }
+
+  Future<void> deletePetData(int id) async {
+    try {
+      final response =
+          await supabase.from('Add_UserPet').delete().eq('id', id);
+
+      if (response != null && response.error != null) {
+        throw response.error!;
+      }
+    } catch (error) {
+      print('Error deleting pet data: $error');
+      rethrow;
+    }
   }
 }
