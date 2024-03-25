@@ -39,9 +39,10 @@ dependencies:
   qr_code_scanner: ^1.0.1
   dio: ^5.4.0
   url_launcher: ^6.2.4
-  flutter_launcher_icons: ^0.13.1
+
 
 dev_dependencies:
+  flutter_launcher_icons: ^0.13.1
   flutter_test:
     sdk: flutter
 
@@ -83,3 +84,6 @@ flutter:
     - assets/images/index_images/demo_user_friend_add.png
     - assets/images/emoticon_images/emoticon_heart.png
     - assets/images/launcher_icon/witdog_logo.png
+    - assets/images/index_images/drawer1.png
+    - assets/images/index_images/drawer2.png
+    - assets/images/index_images/drawer3.png
