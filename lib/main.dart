@@ -9,6 +9,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:testing_pet/provider/auth_provider.dart';
 import 'package:testing_pet/provider/pet_provider.dart';
 import 'package:testing_pet/screens/auth/login_screen.dart';
+import 'package:testing_pet/screens/auth/tab_home_screen.dart';
 import 'package:testing_pet/screens/auth/tab_login_screen.dart';
 import 'package:testing_pet/widgets/service/DeviceInfoService.dart';
 import 'package:testing_pet/widgets/service/signalling_service.dart';
@@ -77,7 +78,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => AuthProvider()),
           ChangeNotifierProvider(create: (_) => PetProvider()),
         ],
-        child: isTablet ? TabLoginScreen() : LoginScreen(),
+        child: isTablet ? TabHomeScreen(petIdentity : '') : LoginScreen(),
       ),
       routes: {
         '/login': (context) => isTablet ? TabLoginScreen() : LoginScreen(),

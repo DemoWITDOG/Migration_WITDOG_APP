@@ -456,7 +456,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Divider(
               color: Colors.black12,
             ),
-            SizedBox(height: 620),
+            SizedBox(height: 420),
             Container(
               child: ElevatedButton(
                 onPressed: () {

@@ -55,7 +55,7 @@ class _TabHomeScreen extends State<TabHomeScreen> {
 
     print('pet device pet account : $petIdentity');
     return Scaffold(
-      endDrawer: buildDrawer(context),
+      //endDrawer: buildDrawer(context),
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return [
@@ -83,7 +83,7 @@ class _TabHomeScreen extends State<TabHomeScreen> {
                     size: 30,
                   ),
                 ),
-                Builder(
+/*                Builder(
                   builder: (BuildContext context) {
                     return IconButton(
                       onPressed: () {
@@ -96,7 +96,7 @@ class _TabHomeScreen extends State<TabHomeScreen> {
                       ),
                     );
                   },
-                ),
+                ),*/
                 SizedBox(width: 15),
               ],
             ),
@@ -230,7 +230,7 @@ class _TabHomeScreen extends State<TabHomeScreen> {
 Widget buildCard(
     BuildContext context, String title, String imagePath, Widget route) {
   return Card(
-    color: Color(0xFFD4ECEA),
+    color: Color(0xFF6A9E85),
     elevation: 1.5,
     child: InkWell(
       onTap: () {
